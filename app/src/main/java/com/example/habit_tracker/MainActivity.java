@@ -40,9 +40,17 @@ public class MainActivity extends AppCompatActivity {
         fabAddHabit.setOnClickListener(view -> {
             startActivity(new Intent(MainActivity.this, AddHabitActivity.class));
         });
+
     }
     private void loadHabits() {
         executorService.execute(() -> {
+            // 🛠️ Add Dummy Data (ONLY IF the database is empty)
+            if (habitDatabase.habitDao().getAllHabits().isEmpty()) {
+                habitDatabase.habitDao().insert(new Habit("Exercise", 5, System.currentTimeMillis()));
+                habitDatabase.habitDao().insert(new Habit("Read a book", 3, System.currentTimeMillis()));
+            }
+
+            // 🔄 Fetch habits from the database
             List<Habit> habitList = habitDatabase.habitDao().getAllHabits();
             runOnUiThread(() -> {
                 if (habitList != null) {
@@ -51,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
             });
         });
     }
+
+
 
 
 
